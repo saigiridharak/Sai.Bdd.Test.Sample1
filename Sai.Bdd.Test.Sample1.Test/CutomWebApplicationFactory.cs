@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Sai.Bdd.Test.Sample1.Services;
 using Sai.Bdd.Test.Sample1.Test.Mocks;
@@ -18,30 +13,25 @@ namespace Sai.Bdd.Test.Sample1.Test
     {
 		protected override void ConfigureWebHost(IWebHostBuilder builder)
 		{
-			Console.WriteLine("Begin ConfigureWebHost");
 			builder.ConfigureTestServices(services =>
 			{
-				//services.AddAuthentication("Test")
-				//	.AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
-				//		"Test", options => { });
+				// This mock if for two interfaces
+				var mockUserService = new UserExternalRepoClientMock();
 
-				var mock1 = new UserExternalRepoClientMock();
-
+				// 1. Mock for Refit client
 				services.AddTransient<IUserExternalRepoClient, UserExternalRepoClientMock>(s => {
-					return mock1;
+					return mockUserService;
 				});
 
+				// 2. Mock for injecting / setting test data
 				services.AddTransient<IUserExternalRepoMockClient, UserExternalRepoClientMock>(s => {
-					return mock1;
+					return mockUserService;
 				});
 
 			});
 
 			var configPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
 			builder.ConfigureAppConfiguration(c => c.AddJsonFile(configPath));
-
-			Console.WriteLine("End ConfigureWebHost");
-
 		}
 	}
 }
