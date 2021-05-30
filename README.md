@@ -12,7 +12,7 @@ Same class also implements *IUserExternalRepoMockClient* which is basically an i
 This is the key to set test data in each test.
 
 In the code
-```
+```C#
 // This is refit client
 public interface IUserExternalRepoClient
 {
